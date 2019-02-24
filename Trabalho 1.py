@@ -57,38 +57,14 @@ def RGB_YIQ_RGB(imagem):
 
 	return new
 
-#1.2 - Exibição de bandas individuais (R, G e B) como imagens monocromáticas ou coloridas (em tons de R, G ou B, respectivamente)
 
-def Mono_R(imagem):
-	width, height = imagem.size
-	new = criaImagem(width,height)
-	pixels = new.load()
-
-	for k in range(0,width):
-			for j in range(0,height):
-				pixel = pegaPixel(imagem, k, j)
-
-				r = pixel[0]
-				g = pixel[1]
-				b = pixel[2]
-
-				#cinza =  
-
-				r = r/2
-				g = g/2
-				b = b/2
-
-				#r = min(max(r,0),255)
-				pixels[k,j] = (int(cinza),int(cinza),int(cinza))
-
-	return new
 
 
 if __name__ == "__main__":
 	imagem = abreImagem("teste.jpg")
-	#RGB_YIQ_RGB = RGB_YIQ_RGB(imagem)
-	#salvaImagem(RGB_YIQ_RGB, 'saida/RGB-YIQ-RGB.png')
-	Mono_R = Mono_R(imagem)
-	salvaImagem(Mono_R, 'saida/Mono_R.png')
+	RGB_YIQ_RGB = RGB_YIQ_RGB(imagem)
+	salvaImagem(RGB_YIQ_RGB, 'saida/RGB-YIQ-RGB.png')
+	#Mono_R = Mono_R(imagem)
+	#salvaImagem(Mono_R, 'saida/Mono_R.png')
 
 				
