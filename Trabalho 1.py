@@ -57,14 +57,110 @@ def RGB_YIQ_RGB(imagem):
 
 	return new
 
+#1.2 - Exibição de bandas individuais (R, G e B) como imagens monocromáticas ou coloridas (em tons de R, G ou B, respectivamente)
 
+def Mono_R(imagem):
+	width, height = imagem.size
+	new = criaImagem(width,height)
+	pixels = new.load()
+
+	for k in range(0,width):
+		for j in range(0,height):
+
+			pixel = pegaPixel(imagem, k, j)
+
+			r = pixel[0]
+			g = pixel[1]
+			b = pixel[2]
+
+			r = r/2
+			g = g/2
+			b = b/2
+
+			cinza = r * 0.299 + g * 0.587 + b * 0.114 
+
+			#r = min(max(r,0),255)
+			pixels[k,j] = (int(cinza),int(cinza),int(cinza))
+
+	return new
+
+def Banda_R(imagem):
+	width, height = imagem.size
+	new = criaImagem(width,height)
+	pixels = new.load()
+
+	for k in range(0,width):
+		for j in range(0,height):
+
+			pixel = pegaPixel(imagem, k, j)
+
+			r = pixel[0]
+			g = pixel[1]
+			b = pixel[2]
+			
+			g = 0
+			b = 0
+	
+			pixels[k,j] = (int(r),int(g),int(b))
+
+	return new
+
+def Banda_G(imagem):
+	width, height = imagem.size
+	new = criaImagem(width,height)
+	pixels = new.load()
+
+	for k in range(0,width):
+			for j in range(0,height):
+				pixel = pegaPixel(imagem, k, j)
+
+				r = pixel[0]
+				g = pixel[1]
+				b = pixel[2]
+				
+				r = 0
+				b = 0
+		
+				pixels[k,j] = (int(r),int(g),int(b))
+
+	return new
+
+def Banda_B(imagem):
+	width, height = imagem.size
+	new = criaImagem(width,height)
+	pixels = new.load()
+
+	for k in range(0,width):
+		for j in range(0,height):
+
+			pixel = pegaPixel(imagem, k, j)
+
+			r = pixel[0]
+			g = pixel[1]
+			b = pixel[2]
+			
+			r = 0
+			g = 0
+
+			pixels[k,j] = (int(r),int(g),int(b))
+
+	return new
 
 
 if __name__ == "__main__":
 	imagem = abreImagem("teste.jpg")
+	#RGB_YIQ_RGB
 	RGB_YIQ_RGB = RGB_YIQ_RGB(imagem)
 	salvaImagem(RGB_YIQ_RGB, 'saida/RGB-YIQ-RGB.png')
-	#Mono_R = Mono_R(imagem)
-	#salvaImagem(Mono_R, 'saida/Mono_R.png')
-
-				
+	#Monocromática de R
+	Mono_R = Mono_R(imagem)
+	salvaImagem(Mono_R, 'saida/Mono_R.png')
+	#Banda Red
+	Banda_R = Banda_R(imagem)
+	salvaImagem(Banda_R,'saida/Banda_R.png')
+	#Banda Green
+	Banda_G = Banda_G(imagem)
+	salvaImagem(Banda_G,'saida/Banda_G.png')
+	#Banda Blue
+	Banda_B = Banda_B(imagem)
+	salvaImagem(Banda_B,'saida/Banda_B.png')
