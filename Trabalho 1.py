@@ -59,7 +59,7 @@ def RGB_YIQ_RGB(imagem):
 
 #1.2 - Exibição de bandas individuais (R, G e B) como imagens monocromáticas ou coloridas (em tons de R, G ou B, respectivamente)
 
-def Mono_R(imagem):
+def Mono(imagem):
 	width, height = imagem.size
 	new = criaImagem(width,height)
 	pixels = new.load()
@@ -169,14 +169,48 @@ def Negativo(imagem):
 
 	return new
 
+
+
+
+
+
+
+
+#1.8 - Limiarização com limiar m escolhido pelo usuário.
+
+def Limiarizacao(imagem,m):
+	width, height = imagem.size
+	new = criaImagem(width,height)
+	pixels = new.load()
+
+	for k in range(0,width):
+		for j in range(0,height):
+
+			pixel = pegaPixel(imagem, k, j)
+
+			r = pixel[0]
+			g = pixel[1]
+			b = pixel[2]
+			# result = (false,true)[condition]
+			r = (255,0)[r<=m]
+			g = (255,0)[g<=m]
+			b = (255,0)[b<=m]
+
+			pixels[k,j] = (int(r),int(g),int(b))
+
+	return new
+
+
+
+
 if __name__ == "__main__":
 	imagem = abreImagem("teste.jpg")
 	#RGB_YIQ_RGB
 	RGB_YIQ_RGB = RGB_YIQ_RGB(imagem)
 	salvaImagem(RGB_YIQ_RGB, 'saida/RGB-YIQ-RGB.png')
 	#Monocromática de R
-	Mono_R = Mono_R(imagem)
-	salvaImagem(Mono_R, 'saida/Mono_R.png')
+	Mono = Mono(imagem)
+	salvaImagem(Mono, 'saida/Mono.png')
 	#Banda Red
 	Banda_R = Banda_R(imagem)
 	salvaImagem(Banda_R,'saida/Banda_R.png')
@@ -189,3 +223,9 @@ if __name__ == "__main__":
 	#Negativo
 	Negativo = Negativo(imagem)
 	salvaImagem(Negativo,'saida/Negativo.png')
+
+	#Limiarização
+	m = 100
+
+	Limiarizacao = Limiarizacao(imagem,m)
+	salvaImagem(Limiarizacao,'saida/LimiarM.png')
