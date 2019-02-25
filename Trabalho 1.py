@@ -147,6 +147,28 @@ def Banda_B(imagem):
 	return new
 
 
+def Negativo(imagem):
+	width, height = imagem.size
+	new = criaImagem(width,height)
+	pixels = new.load()
+
+	for k in range(0,width):
+		for j in range(0,height):
+
+			pixel = pegaPixel(imagem, k, j)
+
+			r = pixel[0]
+			g = pixel[1]
+			b = pixel[2]
+			
+			r = (-1*r+255)
+			g = (-1*g+255)
+			b = (-1*b+255)
+
+			pixels[k,j] = (int(r),int(g),int(b))
+
+	return new
+
 if __name__ == "__main__":
 	imagem = abreImagem("teste.jpg")
 	#RGB_YIQ_RGB
@@ -164,3 +186,6 @@ if __name__ == "__main__":
 	#Banda Blue
 	Banda_B = Banda_B(imagem)
 	salvaImagem(Banda_B,'saida/Banda_B.png')
+	#Negativo
+	Negativo = Negativo(imagem)
+	salvaImagem(Negativo,'saida/Negativo.png')
