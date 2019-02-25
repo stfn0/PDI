@@ -146,7 +146,6 @@ def Banda_B(imagem):
 
 	return new
 
-
 def Negativo(imagem):
 	width, height = imagem.size
 	new = criaImagem(width,height)
@@ -169,7 +168,61 @@ def Negativo(imagem):
 
 	return new
 
+#1.4 - Brilho Aditivo
+def BrilhoAditivo(imagem,c):
+	width, height = imagem.size
+	new = criaImagem(width,height)
+	pixels = new.load()
 
+	for k in range(0,width):
+		for j in range(0,height):
+
+			pixel = pegaPixel(imagem, k, j)
+
+			r = pixel[0]
+			g = pixel[1]
+			b = pixel[2]
+
+			r = r+c
+			g = g+c
+			b = b+c
+
+			#Tratando os limites
+			r = min(max(r,0),255)
+			g = min(max(g,0),255)
+			b = min(max(b,0),255)
+
+			pixels[k,j] = (int(r),int(g),int(b))
+
+	return new
+
+#1.5 - Brilho Multiplicativo
+def BrilhoMultiplicativo(imagem,d):
+	width, height = imagem.size
+	new = criaImagem(width,height)
+	pixels = new.load()
+
+	for k in range(0,width):
+		for j in range(0,height):
+
+			pixel = pegaPixel(imagem, k, j)
+
+			r = pixel[0]
+			g = pixel[1]
+			b = pixel[2]
+
+			r = r*d
+			g = g*d
+			b = b*d
+
+			#Tratando os limites
+			r = min(max(r,0),255)
+			g = min(max(g,0),255)
+			b = min(max(b,0),255)
+
+			pixels[k,j] = (int(r),int(g),int(b))
+
+	return new
 
 
 
@@ -202,13 +255,12 @@ def Limiarizacao(imagem,m):
 
 
 
-
 if __name__ == "__main__":
 	imagem = abreImagem("teste.jpg")
 	#RGB_YIQ_RGB
 	RGB_YIQ_RGB = RGB_YIQ_RGB(imagem)
 	salvaImagem(RGB_YIQ_RGB, 'saida/RGB-YIQ-RGB.png')
-	#Monocromática de R
+	#Monocromática
 	Mono = Mono(imagem)
 	salvaImagem(Mono, 'saida/Mono.png')
 	#Banda Red
@@ -223,9 +275,15 @@ if __name__ == "__main__":
 	#Negativo
 	Negativo = Negativo(imagem)
 	salvaImagem(Negativo,'saida/Negativo.png')
-
+	#Brilho Aditivo
+	c=10
+	BrilhoAditivo = BrilhoAditivo(imagem,c)
+	salvaImagem(BrilhoAditivo,'saida/BrilhoAditivo.png')
+	#Brilho Multiplicativo
+	d=10
+	BrilhoAditivo = BrilhoMultiplicativo(imagem,d)
+	salvaImagem(BrilhoAditivo,'saida/brilhoMultiplicativo.png')
 	#Limiarização
 	m = 100
-
 	Limiarizacao = Limiarizacao(imagem,m)
 	salvaImagem(Limiarizacao,'saida/LimiarM.png')
