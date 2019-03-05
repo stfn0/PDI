@@ -1,5 +1,10 @@
-from PIL import Image
+ #!/usr/bin/python
+ # -*- coding: utf-8 -*-
+
+import sys
+
 import numpy as np
+from PIL import Image
 
 ##########################
 #Primeiro Trabalho de PDI#
@@ -256,34 +261,69 @@ def Limiarizacao(imagem,m):
 
 
 if __name__ == "__main__":
-	imagem = abreImagem("teste.jpg")
-	#RGB_YIQ_RGB
-	RGB_YIQ_RGB = RGB_YIQ_RGB(imagem)
-	salvaImagem(RGB_YIQ_RGB, 'saida/RGB-YIQ-RGB.png')
-	#Monocromática
-	Mono = Mono(imagem)
-	salvaImagem(Mono, 'saida/Mono.png')
-	#Banda Red
-	Banda_R = Banda_R(imagem)
-	salvaImagem(Banda_R,'saida/Banda_R.png')
-	#Banda Green
-	Banda_G = Banda_G(imagem)
-	salvaImagem(Banda_G,'saida/Banda_G.png')
-	#Banda Blue
-	Banda_B = Banda_B(imagem)
-	salvaImagem(Banda_B,'saida/Banda_B.png')
-	#Negativo
-	Negativo = Negativo(imagem)
-	salvaImagem(Negativo,'saida/Negativo.png')
-	#Brilho Aditivo
-	c=10
-	BrilhoAditivo = BrilhoAditivo(imagem,c)
-	salvaImagem(BrilhoAditivo,'saida/BrilhoAditivo.png')
-	#Brilho Multiplicativo
-	d=10
-	BrilhoAditivo = BrilhoMultiplicativo(imagem,d)
-	salvaImagem(BrilhoAditivo,'saida/brilhoMultiplicativo.png')
-	#Limiarização
-	m = 100
-	Limiarizacao = Limiarizacao(imagem,m)
-	salvaImagem(Limiarizacao,'saida/LimiarM.png')
+
+		fileInput = sys.argv[1]
+		fileOutput = sys.argv[2]
+		imagem = abreImagem(fileInput)
+
+		MenuSelect = input(
+		" _____                                           _          ____  _     _ _       _      _        _                           \n"
+		+"|  _  |___ ___ ___ ___ ___ ___ ___ _____ ___ ___| |_ ___   |    \|_|___|_| |_ ___| |   _| |___   |_|_____ ___ ___ ___ ___ ___ \n"
+		+"|   __|  _| . |  _| -_|_ -|_ -| .'|     | -_|   |  _| . |  |  |  | | . | |  _| .'| |  | . | -_|  | |     | .'| . | -_|   |_ -|\n"
+		+"|__|  |_| |___|___|___|___|___|__,|_|_|_|___|_|_|_| |___|  |____/|_|_  |_|_| |__,|_|  |___|___|  |_|_|_|_|__,|_  |___|_|_|___|\n"
+		+"                                                                   |___|                                     |___|            \n\n\n\n"		
+		+"\t+---+-------------------------------------------------------+\n"
+		+"\t|   |           Digite o numero da opção desejada           |\n"
+		+"\t+---+-------------------------------------------------------+\n"
+		+"\t| 1 | RGB-YIQ-RGB                                           |\n"
+		+"\t| 2 | Mono                                                  |\n"
+		+"\t| 3 | Banda R                                               |\n"
+		+"\t| 4 | Banda G                                               |\n"
+		+"\t| 5 | Banda B                                               |\n"
+		+"\t| 6 | Negativo                                              |\n"
+		+"\t| 7 | Brilho Aditivo                                        |\n"
+		+"\t| 8 | Brilho Multiplicativo                                 |\n"
+		+"\t| 9 | Limiarização                                          |\n"
+		+"\t+---+-------------------------------------------------------+\n"
+		)
+		if(MenuSelect == '1'):
+			#RGB_YIQ_RGB
+			RGB_YIQ_RGB = RGB_YIQ_RGB(imagem)
+			salvaImagem(RGB_YIQ_RGB, 'saida/'+fileOutput+'_RGB-YIQ-RGB.png')
+		elif(MenuSelect == '2'):
+			#Monocromática
+			Mono = Mono(imagem)
+			salvaImagem(Mono, 'saida/'+fileOutput+'_Mono.png')
+		elif(MenuSelect == '3'):
+			#Banda Red
+			Banda_R = Banda_R(imagem)
+			salvaImagem(Banda_R,'saida/'+fileOutput+'_Banda_R.png')
+		elif(MenuSelect == '4'):
+			#Banda Green
+			Banda_G = Banda_G(imagem)
+			salvaImagem(Banda_G,'saida/'+fileOutput+'_Banda_G.png')
+		elif(MenuSelect == '5'):
+			#Banda Blue
+			Banda_B = Banda_B(imagem)
+			salvaImagem(Banda_B,'saida/'+fileOutput+'_Banda_B.png')
+		elif(MenuSelect == '6'):
+			#Negativo
+			Negativo = Negativo(imagem)
+			salvaImagem(Negativo,'saida/'+fileOutput+'_Negativo.png')
+		elif(MenuSelect == '7'):
+			#Brilho Aditivo
+			c = int(input("Valor do aditivo: "))
+			BrilhoAditivo = BrilhoAditivo(imagem,c)
+			salvaImagem(BrilhoAditivo,'saida/'+fileOutput+'_BrilhoAditivo_'+str(c)+'.png')
+		elif(MenuSelect == '8'):
+			#Brilho Multiplicativo
+			d = int(input("Valor do multiplicativo: "))
+			BrilhoAditivo = BrilhoMultiplicativo(imagem,d)
+			salvaImagem(BrilhoAditivo,'saida/'+fileOutput+'_brilhoMultiplicativo_'+str(d)+'.png')
+		elif(MenuSelect == '9'):
+			#Limiarização
+			m = int(input("Valor do limiar: "))
+			Limiarizacao = Limiarizacao(imagem,m)
+			salvaImagem(Limiarizacao,'saida/'+fileOutput+'_LimiarM_'+str(m)+'.png')
+
+		print("Filtro aplicada com sucesso")
