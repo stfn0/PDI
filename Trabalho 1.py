@@ -234,9 +234,11 @@ def Limiarizacao(imagem,m):
 	return new
 
 #1.7 Filtro mediana m x n
-def mean(numbers):
-		median = int(len(numbers)/2)
-		return int((numbers[median]+numbers[median+1])/2)
+def MeanMid(numbers):
+		A = numbers[(len(numbers)//2)]
+		B = numbers[((len(numbers)+1)//2)]
+		return tuple([(A[i]+B[i])//2 for i in range(len(A))])
+		 
 
 def FiltroMediana(imagem,m,n):
 	width, height = imagem.size
@@ -245,25 +247,24 @@ def FiltroMediana(imagem,m,n):
 
 	Ntotal = m*n
 	NtotalMedian = int(Ntotal/2)+1
-	window = [[] * 1 for i in range(3)] # >> [[],[],[]]
+	window = [] 
 
-	for k in range(0,width):
+	for k in range(0,width): #movimento na imagem
 		for j in range(0,height):
-			for h in range(0,m):
+			for h in range(0,m): #movimento na janela do filtro
 				for g in range(0,n):
-					BlockWidth = (0,width-(h+k+1))[h+k>=width]
-					BlockHeight= (0,height-(j+g+1))[g+j>=height]
-					pixel = pegaPixel(imagem, k+h+BlockWidth, j+g+BlockHeight)
-					window[0].append(pixel[0])
-					window[1].append(pixel[1])
-					window[2].append(pixel[2])
-			for i in range(0,3):
-				window[i].sort()
-				print(window[i])
+					PosW = ((m//2)-h,h)[h<(m//2)]
+					PosH = ((n//2)-g,g)[g<(n//2)]
+					if(((k+PosW)<width and (k+PosW)>=0 and (j+PosH)<height and (j+PosH)>=0)):
+						pixel = pegaPixel(imagem, k+PosW, j+PosH)
+						window.append(pixel)
+			window.sort()
+			
 			if (Ntotal % 2 == 0):
-				pixels[k,j] = (window[0][mean(window[0])],window[1][mean(window[0])],window[2][mean(window[0])])		
+				pixels[k,j] = (MeanMid(window))		
 			else:
-				pixels[k,j] = (window[0][NtotalMedian],window[1][NtotalMedian],window[2][NtotalMedian])		
+				pixels[k,j] = (window[(len(window)//2)])
+			window.clear()
 	return new
 
 
