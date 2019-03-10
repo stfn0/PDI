@@ -53,7 +53,7 @@ def RGB_YIQ_RGB(imagem):
 			b = 1*y - 1.105*i + 1.702*q
 
 			#Tratando os limites
-			r = min(max(r,0),255)
+			r = min(max(r,0),255) 
 			g = min(max(g,0),255)
 			b = min(max(b,0),255)
 
@@ -66,8 +66,13 @@ def RGB_YIQ_RGB(imagem):
 
 def Mono(imagem):
 	width, height = imagem.size
-	new = criaImagem(width,height)
-	pixels = new.load()
+	newR = criaImagem(width,height)
+	newB = criaImagem(width,height)
+	newG = criaImagem(width,height)
+
+	red = newR.load()
+	green= newB.load()
+	blue = newG.load()
 
 	for k in range(0,width):
 		for j in range(0,height):
@@ -78,16 +83,19 @@ def Mono(imagem):
 			g = pixel[1]
 			b = pixel[2]
 
-			r = r/2
-			g = g/2
-			b = b/2
+			cinzaR = r * 0.299 + r * 0.587 + r * 0.114
+			cinzaG = g * 0.299 + g * 0.587 + g * 0.114 
+			cinzaB = b * 0.299 + b * 0.587 + b * 0.114 
 
-			cinza = r * 0.299 + g * 0.587 + b * 0.114 
 
 			#r = min(max(r,0),255)
-			pixels[k,j] = (int(cinza),int(cinza),int(cinza))
+			red[k,j]	= (int(cinzaR),int(cinzaR),int(cinzaR))
+			green[k,j]	= (int(cinzaG),int(cinzaG),int(cinzaG))
+			blue[k,j]	= (int(cinzaB),int(cinzaB),int(cinzaB))
 
-	return new
+			#pixels[k,j] = (int(cinza),int(cinza),int(cinza))
+
+	return newR, newB, newG
 
 def Banda_R(imagem):
 	width, height = imagem.size
@@ -229,11 +237,6 @@ def BrilhoMultiplicativo(imagem,d):
 
 	return new
 
-
-
-
-
-
 #1.8 - Limiarização com limiar m escolhido pelo usuário.
 
 def Limiarizacao(imagem,m):
@@ -264,66 +267,82 @@ if __name__ == "__main__":
 
 		fileInput = sys.argv[1]
 		fileOutput = sys.argv[2]
-		imagem = abreImagem(fileInput)
 
-		MenuSelect = input(
-		" _____                                           _          ____  _     _ _       _      _        _                           \n"
-		+"|  _  |___ ___ ___ ___ ___ ___ ___ _____ ___ ___| |_ ___   |    \|_|___|_| |_ ___| |   _| |___   |_|_____ ___ ___ ___ ___ ___ \n"
-		+"|   __|  _| . |  _| -_|_ -|_ -| .'|     | -_|   |  _| . |  |  |  | | . | |  _| .'| |  | . | -_|  | |     | .'| . | -_|   |_ -|\n"
-		+"|__|  |_| |___|___|___|___|___|__,|_|_|_|___|_|_|_| |___|  |____/|_|_  |_|_| |__,|_|  |___|___|  |_|_|_|_|__,|_  |___|_|_|___|\n"
-		+"                                                                   |___|                                     |___|            \n\n\n\n"		
-		+"\t+---+-------------------------------------------------------+\n"
-		+"\t|   |           Digite o numero da opção desejada           |\n"
-		+"\t+---+-------------------------------------------------------+\n"
-		+"\t| 1 | RGB-YIQ-RGB                                           |\n"
-		+"\t| 2 | Mono                                                  |\n"
-		+"\t| 3 | Banda R                                               |\n"
-		+"\t| 4 | Banda G                                               |\n"
-		+"\t| 5 | Banda B                                               |\n"
-		+"\t| 6 | Negativo                                              |\n"
-		+"\t| 7 | Brilho Aditivo                                        |\n"
-		+"\t| 8 | Brilho Multiplicativo                                 |\n"
-		+"\t| 9 | Limiarização                                          |\n"
-		+"\t+---+-------------------------------------------------------+\n"
-		)
-		if(MenuSelect == '1'):
-			#RGB_YIQ_RGB
-			RGB_YIQ_RGB = RGB_YIQ_RGB(imagem)
-			salvaImagem(RGB_YIQ_RGB, 'saida/'+fileOutput+'_RGB-YIQ-RGB.png')
-		elif(MenuSelect == '2'):
-			#Monocromática
-			Mono = Mono(imagem)
-			salvaImagem(Mono, 'saida/'+fileOutput+'_Mono.png')
-		elif(MenuSelect == '3'):
-			#Banda Red
-			Banda_R = Banda_R(imagem)
-			salvaImagem(Banda_R,'saida/'+fileOutput+'_Banda_R.png')
-		elif(MenuSelect == '4'):
-			#Banda Green
-			Banda_G = Banda_G(imagem)
-			salvaImagem(Banda_G,'saida/'+fileOutput+'_Banda_G.png')
-		elif(MenuSelect == '5'):
-			#Banda Blue
-			Banda_B = Banda_B(imagem)
-			salvaImagem(Banda_B,'saida/'+fileOutput+'_Banda_B.png')
-		elif(MenuSelect == '6'):
-			#Negativo
-			Negativo = Negativo(imagem)
-			salvaImagem(Negativo,'saida/'+fileOutput+'_Negativo.png')
-		elif(MenuSelect == '7'):
-			#Brilho Aditivo
-			c = int(input("Valor do aditivo: "))
-			BrilhoAditivo = BrilhoAditivo(imagem,c)
-			salvaImagem(BrilhoAditivo,'saida/'+fileOutput+'_BrilhoAditivo_'+str(c)+'.png')
-		elif(MenuSelect == '8'):
-			#Brilho Multiplicativo
-			d = int(input("Valor do multiplicativo: "))
-			BrilhoAditivo = BrilhoMultiplicativo(imagem,d)
-			salvaImagem(BrilhoAditivo,'saida/'+fileOutput+'_brilhoMultiplicativo_'+str(d)+'.png')
-		elif(MenuSelect == '9'):
-			#Limiarização
-			m = int(input("Valor do limiar: "))
-			Limiarizacao = Limiarizacao(imagem,m)
-			salvaImagem(Limiarizacao,'saida/'+fileOutput+'_LimiarM_'+str(m)+'.png')
 
-		print("Filtro aplicada com sucesso")
+		
+		while(True):
+			imagem = abreImagem(fileInput)
+			MenuSelect = input(
+			" _____                                           _          ____  _     _ _       _      _        _                           \n"
+			+"|  _  |___ ___ ___ ___ ___ ___ ___ _____ ___ ___| |_ ___   |    \|_|___|_| |_ ___| |   _| |___   |_|_____ ___ ___ ___ ___ ___ \n"
+			+"|   __|  _| . |  _| -_|_ -|_ -| .'|     | -_|   |  _| . |  |  |  | | . | |  _| .'| |  | . | -_|  | |     | .'| . | -_|   |_ -|\n"
+			+"|__|  |_| |___|___|___|___|___|__,|_|_|_|___|_|_|_| |___|  |____/|_|_  |_|_| |__,|_|  |___|___|  |_|_|_|_|__,|_  |___|_|_|___|\n"
+			+"                                                                   |___|                                     |___|            \n\n\n\n"		
+			+"\t+---+-------------------------------------------------------+\n"
+			+"\t|   |           Digite o numero da opção desejada           |\n"
+			+"\t+---+-------------------------------------------------------+\n"
+			+"\t| 1 | RGB-YIQ-RGB                                           |\n"
+			+"\t| 2 | Mono                                                  |\n"
+			+"\t| 3 | Banda R                                               |\n"
+			+"\t| 4 | Banda G                                               |\n"
+			+"\t| 5 | Banda B                                               |\n"
+			+"\t| 6 | Negativo                                              |\n"
+			+"\t| 7 | Brilho Aditivo                                        |\n"
+			+"\t| 8 | Brilho Multiplicativo                                 |\n"
+			+"\t| 9 | Limiarização                                          |\n"
+			+"\t| 0 | Sair                                                  |\n"
+			+"\t+---+-------------------------------------------------------+\n"
+			)
+			if(MenuSelect == '1'):
+				#RGB_YIQ_RGB
+				RGB_YIQ_RGB = RGB_YIQ_RGB(imagem)
+				salvaImagem(RGB_YIQ_RGB, 'saida/'+fileOutput+'_RGB-YIQ-RGB.png')
+				print("Filtro RGB-YIQ-RGB aplicado com sucesso.")
+			elif(MenuSelect == '2'):
+				#Monocromática
+				[MonoR, MonoG, MonoB] = Mono(imagem)
+				salvaImagem(MonoR, 'saida/'+fileOutput+'_MonoR.png')
+				salvaImagem(MonoG, 'saida/'+fileOutput+'_MonoG.png')
+				salvaImagem(MonoB, 'saida/'+fileOutput+'_MonoB.png')
+				print("Filtro Monocromatico aplicado com sucesso.")
+			elif(MenuSelect == '3'):
+				#Banda Red
+				Banda_R = Banda_R(imagem)
+				salvaImagem(Banda_R,'saida/'+fileOutput+'_Banda_R.png')
+				print("Filtro Red aplicado com sucesso.")
+			elif(MenuSelect == '4'):
+				#Banda Green
+				Banda_G = Banda_G(imagem)
+				salvaImagem(Banda_G,'saida/'+fileOutput+'_Banda_G.png')
+				print("Filtro Green aplicado com sucesso.")
+			elif(MenuSelect == '5'):
+				#Banda Blue
+				Banda_B = Banda_B(imagem)
+				salvaImagem(Banda_B,'saida/'+fileOutput+'_Banda_B.png')
+				print("Filtro Blue aplicado com sucesso.")
+			elif(MenuSelect == '6'):
+				#Negativo
+				Negativo = Negativo(imagem)
+				salvaImagem(Negativo,'saida/'+fileOutput+'_Negativo.png')
+				print("Filtro Negativo aplicado com sucesso.")
+			elif(MenuSelect == '7'):
+				#Brilho Aditivo
+				c = int(input("Valor do aditivo: "))
+				BrilhoAditivo = BrilhoAditivo(imagem,c)
+				salvaImagem(BrilhoAditivo,'saida/'+fileOutput+'_BrilhoAditivo_'+str(c)+'.png')
+				print("Filtro de Brilho Aditivo aplicado com sucesso.")
+			elif(MenuSelect == '8'):
+				#Brilho Multiplicativo
+				d = int(input("Valor do multiplicativo: "))
+				BrilhoAditivo = BrilhoMultiplicativo(imagem,d)
+				salvaImagem(BrilhoAditivo,'saida/'+fileOutput+'_brilhoMultiplicativo_'+str(d)+'.png')
+				print("Filtro de Brilho Multiplicativo aplicado com sucesso.")
+			elif(MenuSelect == '9'):
+				#Limiarização
+				m = int(input("Valor do limiar: "))
+				Limiarizacao = Limiarizacao(imagem,m)
+				salvaImagem(Limiarizacao,'saida/'+fileOutput+'_LimiarM_'+str(m)+'.png')
+				print("Filtro de Limiarizacao aplicado com sucesso.")
+			elif(MenuSelect == '0'):
+				print("Programa finalizado com sucesso.")
+				break;
