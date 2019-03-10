@@ -269,6 +269,7 @@ def FiltroMediana(imagem,m,n):
 			window.clear()
 	return new
 
+#1.6. Convolução m x n com bias (viés, offset). Testar com filtros Média e Sobel
 def Convolution(imagem):
 	width, height = imagem.size
 	new = criaImagem(width,height)
@@ -279,6 +280,36 @@ def Convolution(imagem):
 			if(k>=width//2 and j>=height//2):
 				return new
 			pixels[width-k-1,height-j-1],pixels[k,j] = pegaPixel(imagem,k,j),pegaPixel(imagem,width-k-1,height-j-1)
+	return new
+
+def Mean(numbers):
+	soma=[0,0,0]
+	for i in numbers:
+		for j in range(len(i)):
+			soma[j] = soma[j] + i[j]
+	return tuple([i//len(numbers) for i in soma])
+
+def FiltroMedia(imagem,m,n):
+	imagem = Convolution(imagem)#aplica convolução
+	width, height = imagem.size
+	new = criaImagem(width,height)
+	pixels = new.load()
+
+	window = [] 
+
+	for k in range(0,width): #movimento na imagem
+		for j in range(0,height):
+			for h in range(0,m): #movimento na janela do filtro
+				for g in range(0,n):
+					PosW = ((m//2)-h,h)[h<(m//2)]
+					PosH = ((n//2)-g,g)[g<(n//2)]
+					if(((k+PosW)<width and (k+PosW)>=0 and (j+PosH)<height and (j+PosH)>=0)):
+						pixel = pegaPixel(imagem, k+PosW, j+PosH)
+						window.append(pixel)
+					# else:
+					# 	window.append((0,0,0))
+			pixels[k,j] = (Mean(window))		
+			window.clear()
 	return new
 
 if __name__ == "__main__":
@@ -305,6 +336,7 @@ if __name__ == "__main__":
 			+"\t| 6 | Brilho Multiplicativo                                 |\n"
 			+"\t| 7 | Limiarização                                          |\n"
 			+"\t| 8 | Filtro Mediana                                        |\n"
+			+"\t| 9 | Filtro Media                                          |\n"
 			+"\t| 0 | Sair                                                  |\n"
 			+"\t+---+-------------------------------------------------------+\n"
 			)
@@ -356,6 +388,12 @@ if __name__ == "__main__":
 				n = input("Entre com o valor da coluna: ")
 				FiltroMediana = FiltroMediana(imagem,int(m),int(n))
 				salvaImagem(FiltroMediana,'saida/'+fileOutput+'_FiltroMediana_'+m+'X'+n+'.png')
+			elif(MenuSelect == '9'):
+				#Filtro da media
+				m = input("Entre com o valor da linha: ")
+				n = input("Entre com o valor da coluna: ")
+				FiltroMedia = FiltroMedia(imagem,int(m),int(n))
+				salvaImagem(FiltroMedia,'saida/'+fileOutput+'_FiltroMedia_'+m+'X'+n+'.png')
 			elif(MenuSelect == '0'):
 				print("Programa finalizado com sucesso.")
 				break;
