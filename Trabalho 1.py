@@ -238,7 +238,6 @@ def BrilhoMultiplicativo(imagem,d):
 	return new
 
 #1.8 - Limiarização com limiar m escolhido pelo usuário.
-
 def Limiarizacao(imagem,m):
 	width, height = imagem.size
 	new = criaImagem(width,height)
@@ -258,7 +257,39 @@ def Limiarizacao(imagem,m):
 			b = (255,0)[b<=m]
 
 			pixels[k,j] = (int(r),int(g),int(b))
+	return new
 
+#1.7 Filtro mediana m x n
+def mean(numbers):
+		median = int(len(numbers)/2)
+		return int((numbers[median]+numbers[median+1])/2)
+
+def FiltroMediana(imagem,m,n):
+	width, height = imagem.size
+	new = criaImagem(width,height)
+	pixels = new.load()
+
+	Ntotal = m*n
+	NtotalMedian = int(Ntotal/2)+1
+	window = [[] * 1 for i in range(3)] # >> [[],[],[]]
+
+	for k in range(0,width):
+		for j in range(0,height):
+			for h in range(0,m):
+				for g in range(0,n):
+					BlockWidth = (0,width-(h+k+1))[h+k>=width]
+					BlockHeight= (0,height-(j+g+1))[g+j>=height]
+					pixel = pegaPixel(imagem, k+h+BlockWidth, j+g+BlockHeight)
+					window[0].append(pixel[0])
+					window[1].append(pixel[1])
+					window[2].append(pixel[2])
+			for i in range(0,3):
+				window[i].sort()
+				print(window[i])
+			if (Ntotal % 2 == 0):
+				pixels[k,j] = (window[0][mean(window[0])],window[1][mean(window[0])],window[2][mean(window[0])])		
+			else:
+				pixels[k,j] = (window[0][NtotalMedian],window[1][NtotalMedian],window[2][NtotalMedian])		
 	return new
 
 
@@ -267,8 +298,6 @@ if __name__ == "__main__":
 
 		fileInput = sys.argv[1]
 		fileOutput = sys.argv[2]
-
-
 		
 		while(True):
 			imagem = abreImagem(fileInput)
@@ -290,6 +319,7 @@ if __name__ == "__main__":
 			+"\t| 7 | Brilho Aditivo                                        |\n"
 			+"\t| 8 | Brilho Multiplicativo                                 |\n"
 			+"\t| 9 | Limiarização                                          |\n"
+			+"\t| 10| Filtro Mediana                                        |\n"
 			+"\t| 0 | Sair                                                  |\n"
 			+"\t+---+-------------------------------------------------------+\n"
 			)
@@ -343,6 +373,12 @@ if __name__ == "__main__":
 				Limiarizacao = Limiarizacao(imagem,m)
 				salvaImagem(Limiarizacao,'saida/'+fileOutput+'_LimiarM_'+str(m)+'.png')
 				print("Filtro de Limiarizacao aplicado com sucesso.")
+			elif(MenuSelect == '10'):
+				#Filtro da mediana
+				m = input("Entre com o valor da linha: ")
+				n = input("Entre com o valor da coluna: ")
+				FiltroMediana = FiltroMediana(imagem,int(m),int(n))
+				salvaImagem(FiltroMediana,'saida/'+fileOutput+'_FiltroMediana_'+m+'X'+n+'.png')
 			elif(MenuSelect == '0'):
 				print("Programa finalizado com sucesso.")
 				break;
