@@ -258,6 +258,8 @@ def FiltroMediana(imagem,m,n):
 					if(((k+PosW)<width and (k+PosW)>=0 and (j+PosH)<height and (j+PosH)>=0)):
 						pixel = pegaPixel(imagem, k+PosW, j+PosH)
 						window.append(pixel)
+					# else:
+					# 	window.append((0,0,0))
 			window.sort()
 			
 			if (Ntotal % 2 == 0):
@@ -267,7 +269,17 @@ def FiltroMediana(imagem,m,n):
 			window.clear()
 	return new
 
+def Convolution(imagem):
+	width, height = imagem.size
+	new = criaImagem(width,height)
+	pixels = new.load()
 
+	for k in range(0,width): #movimento na imagem
+		for j in range(0,height):
+			if(k>=width//2 and j>=height//2):
+				return new
+			pixels[width-k-1,height-j-1],pixels[k,j] = pegaPixel(imagem,k,j),pegaPixel(imagem,width-k-1,height-j-1)
+	return new
 
 if __name__ == "__main__":
 
