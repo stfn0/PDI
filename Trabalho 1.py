@@ -97,67 +97,41 @@ def Mono(imagem):
 
 	return newR, newB, newG
 
-def Banda_R(imagem):
+def Banda_RGB(imagem):
 	width, height = imagem.size
-	new = criaImagem(width,height)
-	pixels = new.load()
 
-	for k in range(0,width):
-		for j in range(0,height):
+	newR = criaImagem(width,height)
+	newB = criaImagem(width,height)
+	newG = criaImagem(width,height)
 
-			pixel = pegaPixel(imagem, k, j)
+	red = newR.load()
+	green= newB.load()
+	blue = newG.load()
 
-			r = pixel[0]
-			g = pixel[1]
-			b = pixel[2]
-			
-			g = 0
-			b = 0
-	
-			pixels[k,j] = (int(r),int(g),int(b))
-
-	return new
-
-def Banda_G(imagem):
-	width, height = imagem.size
-	new = criaImagem(width,height)
-	pixels = new.load()
-
-	for k in range(0,width):
+	for i in range(0,3):
+		for k in range(0,width):
 			for j in range(0,height):
+
 				pixel = pegaPixel(imagem, k, j)
 
 				r = pixel[0]
 				g = pixel[1]
 				b = pixel[2]
-				
-				r = 0
-				b = 0
-		
-				pixels[k,j] = (int(r),int(g),int(b))
+					
+				if(i==0):
+					g = 0
+					b = 0			
+					red[k,j] = (int(r),int(g),int(b))
+				if(i==1):
+					r = 0
+					b = 0
+					green[k,j] = (int(r),int(g),int(b))
+				if(i==2):
+					r = 0
+					g = 0
+					blue[k,j] = (int(r),int(g),int(b))
 
-	return new
-
-def Banda_B(imagem):
-	width, height = imagem.size
-	new = criaImagem(width,height)
-	pixels = new.load()
-
-	for k in range(0,width):
-		for j in range(0,height):
-
-			pixel = pegaPixel(imagem, k, j)
-
-			r = pixel[0]
-			g = pixel[1]
-			b = pixel[2]
-			
-			r = 0
-			g = 0
-
-			pixels[k,j] = (int(r),int(g),int(b))
-
-	return new
+	return newR, newB, newG
 
 def Negativo(imagem):
 	width, height = imagem.size
@@ -311,15 +285,13 @@ if __name__ == "__main__":
 			+"\t|   |           Digite o numero da opção desejada           |\n"
 			+"\t+---+-------------------------------------------------------+\n"
 			+"\t| 1 | RGB-YIQ-RGB                                           |\n"
-			+"\t| 2 | Mono                                                  |\n"
-			+"\t| 3 | Banda R                                               |\n"
-			+"\t| 4 | Banda G                                               |\n"
-			+"\t| 5 | Banda B                                               |\n"
-			+"\t| 6 | Negativo                                              |\n"
-			+"\t| 7 | Brilho Aditivo                                        |\n"
-			+"\t| 8 | Brilho Multiplicativo                                 |\n"
-			+"\t| 9 | Limiarização                                          |\n"
-			+"\t| 10| Filtro Mediana                                        |\n"
+			+"\t| 2 | Mono R G B                                            |\n"
+			+"\t| 3 | Banda R G B                                           |\n"
+			+"\t| 4 | Negativo                                              |\n"
+			+"\t| 5 | BrilhoAditivo                                         |\n"
+			+"\t| 6 | Brilho Multiplicativo                                 |\n"
+			+"\t| 7 | Limiarização                                          |\n"
+			+"\t| 8 | Filtro Mediana                                        |\n"
 			+"\t| 0 | Sair                                                  |\n"
 			+"\t+---+-------------------------------------------------------+\n"
 			)
@@ -336,44 +308,36 @@ if __name__ == "__main__":
 				salvaImagem(MonoB, 'saida/'+fileOutput+'_MonoB.png')
 				print("Filtro Monocromatico aplicado com sucesso.")
 			elif(MenuSelect == '3'):
-				#Banda Red
-				Banda_R = Banda_R(imagem)
+				#Bandas Red, Green e Blue
+				[Banda_R,Banda_G,Banda_B] = Banda_RGB(imagem)
 				salvaImagem(Banda_R,'saida/'+fileOutput+'_Banda_R.png')
+				salvaImagem(Banda_G,'saida/'+fileOutput+'_Banda_G.png')
+				salvaImagem(Banda_B,'saida/'+fileOutput+'_Banda_B.png')
 				print("Filtro Red aplicado com sucesso.")
 			elif(MenuSelect == '4'):
-				#Banda Green
-				Banda_G = Banda_G(imagem)
-				salvaImagem(Banda_G,'saida/'+fileOutput+'_Banda_G.png')
-				print("Filtro Green aplicado com sucesso.")
-			elif(MenuSelect == '5'):
-				#Banda Blue
-				Banda_B = Banda_B(imagem)
-				salvaImagem(Banda_B,'saida/'+fileOutput+'_Banda_B.png')
-				print("Filtro Blue aplicado com sucesso.")
-			elif(MenuSelect == '6'):
 				#Negativo
 				Negativo = Negativo(imagem)
 				salvaImagem(Negativo,'saida/'+fileOutput+'_Negativo.png')
 				print("Filtro Negativo aplicado com sucesso.")
-			elif(MenuSelect == '7'):
+			elif(MenuSelect == '5'):
 				#Brilho Aditivo
 				c = int(input("Valor do aditivo: "))
 				BrilhoAditivo = BrilhoAditivo(imagem,c)
 				salvaImagem(BrilhoAditivo,'saida/'+fileOutput+'_BrilhoAditivo_'+str(c)+'.png')
 				print("Filtro de Brilho Aditivo aplicado com sucesso.")
-			elif(MenuSelect == '8'):
+			elif(MenuSelect == '6'):
 				#Brilho Multiplicativo
 				d = int(input("Valor do multiplicativo: "))
 				BrilhoAditivo = BrilhoMultiplicativo(imagem,d)
 				salvaImagem(BrilhoAditivo,'saida/'+fileOutput+'_brilhoMultiplicativo_'+str(d)+'.png')
 				print("Filtro de Brilho Multiplicativo aplicado com sucesso.")
-			elif(MenuSelect == '9'):
+			elif(MenuSelect == '7'):
 				#Limiarização
 				m = int(input("Valor do limiar: "))
 				Limiarizacao = Limiarizacao(imagem,m)
 				salvaImagem(Limiarizacao,'saida/'+fileOutput+'_LimiarM_'+str(m)+'.png')
 				print("Filtro de Limiarizacao aplicado com sucesso.")
-			elif(MenuSelect == '10'):
+			elif(MenuSelect == '8'):
 				#Filtro da mediana
 				m = input("Entre com o valor da linha: ")
 				n = input("Entre com o valor da coluna: ")
