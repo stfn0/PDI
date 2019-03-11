@@ -2,7 +2,7 @@
  # -*- coding: utf-8 -*-
 
 import sys
-
+from math import sqrt
 import numpy as np
 from PIL import Image
 
@@ -320,24 +320,39 @@ def FiltroMedia(imagem,m,n):
 
 def edgeH(window):
 	result = []
-	matrix = [[1,2,1],[0,0,0],[-1,-2,-1]]
+	matrix = [1,2,1,0,0,0,-1,-2,-1]
 	for idx,i in enumerate(window):
 		aux = [0,0,0]
-		for j in range(3):
-			aux[j] = min(max(0,i[j]*matrix[idx][j]),255)
+		for j in range(0,3):
+			aux[j] = min(max(0,i[j]*matrix[idx]),255)
 		result.append(tuple(aux))
 	return result
 
 def edgeV(window):
 	result = []
-	matrix = [[-1,0,1],[-2,0,2],[-1,0,1]]
+	matrix = [-1,0,1,-2,0,2,-1,0,1]
 	for idx,i in enumerate(window):
 		aux = [0,0,0]
 		for j in range(3):
-			aux[j] = min(max(0,i[j]*matrix[idx][j]),255)
+			aux[j] = min(max(0,i[j]*matrix[idx]),255)
 		result.append(tuple(aux))
 	return result
 
+def MeanSQRT(window):
+	SomaR=0
+	SomaG=0
+	SomaB=0
+
+	for j in range(0,len(window)):
+		SomaR += window[j][0]*window[j][0]
+		SomaG += window[j][1]*window[j][1]
+		SomaB += window[j][2]*window[j][2]
+
+	somaR = int(sqrt(SomaR/len(window)))
+	SomaG = int(sqrt(SomaG/len(window)))
+	SomaB = int(sqrt(SomaB/len(window)))
+
+	return (somaR,SomaG,SomaB)
 
 def FiltroSobel(imagem):
 	width, height = imagem.size
@@ -349,8 +364,8 @@ def FiltroSobel(imagem):
 		for j in range(0,height):
 			for h in range(0,3): #movimento na janela do filtro
 				for g in range(0,3):
-					PosW = ((m//2)-h,h)[h<(m//2)]
-					PosH = ((n//2)-g,g)[g<(n//2)]
+					PosW = (1-h,h)[h<1]
+					PosH = (1-g,g)[g<1]
 					if(((k+PosW)<width and (k+PosW)>=0 and (j+PosH)<height and (j+PosH)>=0)):
 						pixel = pegaPixel(imagem, k+PosW, j+PosH)
 						window.append(pixel)
@@ -359,8 +374,7 @@ def FiltroSobel(imagem):
 			window = ConvolutionWindow(window,len(window))
 			windowH = edgeH(window)
 			windowV = edgeV(window)
-			# pixels[k,j] = (MeanSQRT(window))		
-			pixels[k,j] = window		
+			pixels[k,j] = (MeanSQRT(windowH+windowV))		
 			window.clear()
 	return new
 
@@ -389,6 +403,7 @@ if __name__ == "__main__":
 			+"\t| 7 | Limiarização                                          |\n"
 			+"\t| 8 | Filtro Mediana                                        |\n"
 			+"\t| 9 | Filtro Media                                          |\n"
+			+"\t| 10| Filtro Sobel                                          |\n"
 			+"\t| 0 | Sair                                                  |\n"
 			+"\t+---+-------------------------------------------------------+\n"
 			)
@@ -446,6 +461,10 @@ if __name__ == "__main__":
 				n = input("Entre com o valor da coluna: ")
 				FiltroMedia = FiltroMedia(imagem,int(m),int(n))
 				salvaImagem(FiltroMedia,'saida/'+fileOutput+'_FiltroMedia_'+m+'X'+n+'.png')
+			elif(MenuSelect == '10'):
+				#Filtro sobel
+				FiltroSobel = FiltroSobel(imagem)
+				salvaImagem(FiltroSobel,'saida/'+fileOutput+'_FiltroSobel.png')
 			elif(MenuSelect == '0'):
 				print("Programa finalizado com sucesso.")
 				break;
