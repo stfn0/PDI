@@ -270,17 +270,24 @@ def FiltroMediana(imagem,m,n):
 	return new
 
 #1.6. Convolução m x n com bias (viés, offset). Testar com filtros Média e Sobel
-def Convolution(imagem):
-	width, height = imagem.size
-	new = criaImagem(width,height)
-	pixels = new.load()
+# def Convolution(imagem):
+# 	width, height = imagem.size
+# 	new = criaImagem(width,height)
+# 	pixels = new.load()
 
-	for k in range(0,width): #movimento na imagem
-		for j in range(0,height):
-			if(k>=width//2 and j>=height//2):
-				return new
-			pixels[width-k-1,height-j-1],pixels[k,j] = pegaPixel(imagem,k,j),pegaPixel(imagem,width-k-1,height-j-1)
-	return new
+# 	for k in range(0,width): #movimento na imagem
+# 		for j in range(0,height):
+# 			if(k>=width//2 and j>=height//2):
+# 				return new
+# 			pixels[width-k-1,height-j-1],pixels[k,j] = pegaPixel(imagem,k,j),pegaPixel(imagem,width-k-1,height-j-1)
+# 	return new
+
+def ConvolutionWindow(window,width):
+	for k in range(0,width):
+		if(k>=width//2):
+			return window
+		window[width-k-1],window[k] = window[k],window[width-k-1]
+	return window
 
 def Mean(numbers):
 	soma=[0,0,0]
@@ -290,11 +297,9 @@ def Mean(numbers):
 	return tuple([i//len(numbers) for i in soma])
 
 def FiltroMedia(imagem,m,n):
-	imagem = Convolution(imagem)#aplica convolução
 	width, height = imagem.size
 	new = criaImagem(width,height)
 	pixels = new.load()
-
 	window = [] 
 
 	for k in range(0,width): #movimento na imagem
@@ -308,7 +313,54 @@ def FiltroMedia(imagem,m,n):
 						window.append(pixel)
 					# else:
 					# 	window.append((0,0,0))
+			window = ConvolutionWindow(window,len(window))
 			pixels[k,j] = (Mean(window))		
+			window.clear()
+	return new
+
+def edgeH(window):
+	result = []
+	matrix = [[1,2,1],[0,0,0],[-1,-2,-1]]
+	for idx,i in enumerate(window):
+		aux = [0,0,0]
+		for j in range(3):
+			aux[j] = min(max(0,i[j]*matrix[idx][j]),255)
+		result.append(tuple(aux))
+	return result
+
+def edgeV(window):
+	result = []
+	matrix = [[-1,0,1],[-2,0,2],[-1,0,1]]
+	for idx,i in enumerate(window):
+		aux = [0,0,0]
+		for j in range(3):
+			aux[j] = min(max(0,i[j]*matrix[idx][j]),255)
+		result.append(tuple(aux))
+	return result
+
+
+def FiltroSobel(imagem):
+	width, height = imagem.size
+	new = criaImagem(width,height)
+	pixels = new.load()
+	window = [] 
+
+	for k in range(0,width): #movimento na imagem
+		for j in range(0,height):
+			for h in range(0,3): #movimento na janela do filtro
+				for g in range(0,3):
+					PosW = ((m//2)-h,h)[h<(m//2)]
+					PosH = ((n//2)-g,g)[g<(n//2)]
+					if(((k+PosW)<width and (k+PosW)>=0 and (j+PosH)<height and (j+PosH)>=0)):
+						pixel = pegaPixel(imagem, k+PosW, j+PosH)
+						window.append(pixel)
+					else:
+						window.append((0,0,0))
+			window = ConvolutionWindow(window,len(window))
+			windowH = edgeH(window)
+			windowV = edgeV(window)
+			# pixels[k,j] = (MeanSQRT(window))		
+			pixels[k,j] = window		
 			window.clear()
 	return new
 
